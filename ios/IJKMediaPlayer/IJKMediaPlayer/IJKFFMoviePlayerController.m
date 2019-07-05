@@ -52,7 +52,6 @@ static const char *kIJKFFRequiredFFmpegVersion = "ff3.4--ijk0.8.7--20180103--001
     IjkMediaPlayer *_mediaPlayer;
     IJKSDLGLView *_glView;
     IJKFFMoviePlayerMessagePool *_msgPool;
-    NSString *_urlString;
 
     NSInteger _videoWidth;
     NSInteger _videoHeight;
@@ -227,6 +226,7 @@ void IJKFFIOStatCompleteRegister(void (*cb)(const char *url,
         [self setHudValue:nil forKey:@"path"];
         [self setHudValue:nil forKey:@"ip"];
         [self setHudValue:nil forKey:@"tcp-info"];
+        [self setHudValue:nil forKey:@"pts"];
         [self setHudValue:nil forKey:@"http"];
         [self setHudValue:nil forKey:@"tcp-spd"];
         [self setHudValue:nil forKey:@"t-prepared"];
@@ -330,6 +330,7 @@ void IJKFFIOStatCompleteRegister(void (*cb)(const char *url,
         [self setHudValue:nil forKey:@"path"];
         [self setHudValue:nil forKey:@"ip"];
         [self setHudValue:nil forKey:@"tcp-info"];
+        [self setHudValue:nil forKey:@"pts"];
         [self setHudValue:nil forKey:@"http"];
         [self setHudValue:nil forKey:@"tcp-spd"];
         [self setHudValue:nil forKey:@"t-prepared"];
@@ -818,6 +819,7 @@ inline static NSString *formatedSpeed(int64_t bytes, int64_t elapsed_milli) {
     int64_t vdec = ijkmp_get_property_int64(_mediaPlayer, FFP_PROP_INT64_VIDEO_DECODER, FFP_PROPV_DECODER_UNKNOWN);
     float   vdps = ijkmp_get_property_float(_mediaPlayer, FFP_PROP_FLOAT_VIDEO_DECODE_FRAMES_PER_SECOND, .0f);
     float   vfps = ijkmp_get_property_float(_mediaPlayer, FFP_PROP_FLOAT_VIDEO_OUTPUT_FRAMES_PER_SECOND, .0f);
+    double  pts = ijkmp_get_property_pts(_mediaPlayer, .0f);
 
     switch (vdec) {
         case FFP_PROPV_DECODER_VIDEOTOOLBOX:
@@ -836,6 +838,7 @@ inline static NSString *formatedSpeed(int64_t bytes, int64_t elapsed_milli) {
     }
 
     [self setHudValue:[NSString stringWithFormat:@"%.2f / %.2f", vdps, vfps] forKey:@"fps"];
+    [self setHudValue:[NSString stringWithFormat:@"%f", pts] forKey:@"pts"];
 
     int64_t vcacheb = ijkmp_get_property_int64(_mediaPlayer, FFP_PROP_INT64_VIDEO_CACHED_BYTES, 0);
     int64_t acacheb = ijkmp_get_property_int64(_mediaPlayer, FFP_PROP_INT64_AUDIO_CACHED_BYTES, 0);
@@ -1751,6 +1754,16 @@ static int ijkff_inject_callback(void *opaque, int message, void *data, size_t d
             break;
         }
     }
+}
+
+- (double)pts {
+    if(_mediaPlayer && [self isPlaying])
+        return ijkmp_get_property_pts(_mediaPlayer, 0);
+    return 0;
+}
+
+- (CGFloat)getTcpSpeed{
+    return _numberOfBytesTransferred;
 }
 
 - (void)applicationWillEnterForeground

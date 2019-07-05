@@ -497,6 +497,7 @@ typedef struct FFStatistic
     float vdps;
     float avdelay;
     float avdiff;
+    double avpts;
     int64_t bit_rate;
 
     FFTrackCacheStatistic video_cache;

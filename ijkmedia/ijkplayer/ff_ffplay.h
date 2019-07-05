@@ -110,6 +110,7 @@ void      ffp_set_playback_volume(FFPlayer *ffp, float volume);
 int       ffp_get_video_rotate_degrees(FFPlayer *ffp);
 int       ffp_set_stream_selected(FFPlayer *ffp, int stream, int selected);
 
+double    ffp_get_property_pts(FFPlayer *ffp, int id, double default_value);
 float     ffp_get_property_float(FFPlayer *ffp, int id, float default_value);
 void      ffp_set_property_float(FFPlayer *ffp, int id, float value);
 int64_t   ffp_get_property_int64(FFPlayer *ffp, int id, int64_t default_value);

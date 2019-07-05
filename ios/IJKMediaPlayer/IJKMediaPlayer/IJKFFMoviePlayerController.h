@@ -105,8 +105,11 @@ typedef enum IJKLogLevel {
 + (BOOL)checkIfPlayerVersionMatch:(BOOL)showAlert
                             version:(NSString *)version;
 
+@property(nonatomic, readonly) double pts;//pts
+@property(nonatomic, readonly) CGFloat tcpSpeed;//bytes
 @property(nonatomic, readonly) CGFloat fpsInMeta;
 @property(nonatomic, readonly) CGFloat fpsAtOutput;
+@property(nonatomic, readonly) NSString *urlString;
 @property(nonatomic) BOOL shouldShowHudView;
 
 - (void)setOptionValue:(NSString *)value

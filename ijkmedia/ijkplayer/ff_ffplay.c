@@ -1348,6 +1348,8 @@ retry:
 
             /* compute nominal last_duration */
             last_duration = vp_duration(is, lastvp, vp);
+            if (ffp)
+                ffp->stat.avpts = vp->pts;
             delay = compute_target_delay(ffp, last_duration, is);
 
             time= av_gettime_relative()/1000000.0;
@@ -4916,6 +4918,16 @@ void ffp_set_property_float(FFPlayer *ffp, int id, float value)
     }
 }
 
+double ffp_get_property_pts(FFPlayer * ffp,int id,double default_value)
+{
+    switch (id) {
+        case FFP_PROP_FLOAT_PTS:
+            return ffp ? ffp->stat.avpts : default_value;
+        default:
+            return default_value;
+    }
+}
+            
 int64_t ffp_get_property_int64(FFPlayer *ffp, int id, int64_t default_value)
 {
     switch (id) {
